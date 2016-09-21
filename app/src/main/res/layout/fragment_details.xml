@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="2"
+    android:background="@color/abc_search_url_text_normal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/movieTitle"
+        android:textColor="#ffffff"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:textStyle="bold" />
+</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:layout_marginLeft="@dimen/feed_item_margin"
+        android:layout_marginRight="@dimen/feed_item_margin"
+        android:layout_marginTop="@dimen/feed_item_margin"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:paddingRight="@dimen/feed_item_padding_left_right">
+
+            <ImageView
+                android:id="@+id/imgMoviePic"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/abc_ic_star_black_36dp"
+                android:layout_weight="1" />
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/feed_item_profile_info_padd"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:gravity="center_vertical|center">
+
+                <TextView
+                    android:id="@+id/txtMovieDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Title"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/feed_item_profile_name"
+                    android:textStyle="bold"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+
+                <TextView
+                    android:id="@+id/txtPostRate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medium Text"
+                    android:textSize="@dimen/feed_item_timestamp"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_fav"
+                    android:background="@color/abc_search_url_text_normal"
+                    android:layout_margin="10dp"
+                    android:padding="10dp"
+                    android:textColor="@color/abc_primary_text_disable_only_material_dark"
+                    android:id="@+id/btn_add_to_fav" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtPostDiscription"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="5dp"
+            android:paddingLeft="@dimen/feed_item_status_pad_left_right"
+            android:paddingRight="@dimen/feed_item_status_pad_left_right"
+            android:paddingTop="@dimen/feed_item_status_pad_top"
+            android:text="Description" />
+
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+</LinearLayout>
+

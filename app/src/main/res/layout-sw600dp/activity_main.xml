@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <!--<fragment-->
+    <!--xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"-->
+        <!--android:name="com.mal.android.popularmoviesapp.ActivityMainFragment"-->
+    <!--tools:layout="@layout/fragment_activity_main" android:layout_width="0dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="2"/>-->
+    <!--<fragment-->
+    <!--xmlns:tools="http://schemas.android.com/tools" android:id="@+id/movie_detail_container"-->
+    <!--tools:layout="@layout/fragment_main" android:layout_width="0dp"-->
+        <!-- -->
+        <!--android:name="com.mal.android.popularmoviesapp.DetailsActivityFragment"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="4"/>-->
+    <FrameLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        tools:layout="@layout/fragment_activity_main" />
+
+    <FrameLayout
+        android:id="@+id/movie_detail_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4" />
+</LinearLayout>
