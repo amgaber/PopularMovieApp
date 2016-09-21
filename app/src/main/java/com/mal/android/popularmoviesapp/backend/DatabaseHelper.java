@@ -34,7 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String sql = "CREATE TABLE " +TABLE_NAME
                 +"(" +COLUMN_ID+
-                " INTEGER PRIMARY KEY AUTOINCREMENT, " +COLUMN_TITLE+
+                " INTEGER PRIMARY KEY , " +COLUMN_TITLE+
                 " VARCHAR, " +COLUMN_PATH+
                 " VARCHAR, "+COLUMN_OVERVIEW+
                 " VARCHAR, "+COLUMN_DATE+
@@ -50,10 +50,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //When we are adding the movie data to database
-    public boolean addToFavorite(String title, String urlPath,String overview, String date){
+    public boolean addToFavorite(Integer id, String title, String urlPath, String overview, String date){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
+        contentValues.put(COLUMN_ID,id);
         contentValues.put(COLUMN_TITLE,title);
         contentValues.put(COLUMN_PATH, urlPath);
         contentValues.put(COLUMN_OVERVIEW, overview);

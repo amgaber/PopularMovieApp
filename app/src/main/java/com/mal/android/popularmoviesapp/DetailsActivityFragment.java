@@ -51,10 +51,7 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
     private DatabaseHelper dataBase;
     private Movies detailData;
     private Button btn_add_to_fav;
-    private ListView listOne;
     private ListView listTwo;
-    private RelativeLayout trailerHeaderLayout;
-    private RelativeLayout reviewHeaderLayout;
 
 
     public DetailsActivityFragment() {
@@ -83,7 +80,7 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
         dataBase = new DatabaseHelper(getActivity());
 
         detailData = (Movies) details;
-        Log.v(TAG, "Details Data:: " + detailData.getTitle());
+        Log.v(TAG, "Details Data:: " + detailData.getId());
 
         //FETCH data for reviews & videos
         fetchMovies(detailData);
@@ -335,7 +332,7 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
 
     private void addToFav() {
         //here we add data to Database
-        dataBase.addToFavorite(detailData.getTitle(), detailData.getPoster_path(), detailData.getOverview(), detailData.getRelease_date());
+        dataBase.addToFavorite(detailData.getId(),detailData.getTitle(), detailData.getPoster_path(), detailData.getOverview(), detailData.getRelease_date());
         Toast.makeText(getActivity(), "Inserted Successfully to DB", Toast.LENGTH_LONG).show();
         btn_add_to_fav.setText(getString(R.string.added_fav));
     }
