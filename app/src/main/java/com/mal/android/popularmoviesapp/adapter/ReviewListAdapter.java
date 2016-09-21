@@ -17,7 +17,7 @@ import com.mal.android.popularmoviesapp.model.Trailers;
 import java.util.ArrayList;
 
 /**
- * Created by toshiba1 on 9/21/2016.
+ * Created by Alaa Gaber on 9/21/2016.
  */
 public class ReviewListAdapter extends BaseAdapter {
 
@@ -31,7 +31,7 @@ public class ReviewListAdapter extends BaseAdapter {
 
         this.listData = listData;
         this.activity = activity;
-        Log.v(TAG, "trailerData JSON LIST: " + listData);
+        Log.v(TAG, "reviewrData JSON LIST: " + listData);
     }
 
     @Override
@@ -86,25 +86,22 @@ public class ReviewListAdapter extends BaseAdapter {
             grid = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.movie_review_list_row, viewGroup, false);
 
+            //Check if listData is instance of Reviews
             if (listData.get(i) instanceof Reviews) {
                 Log.v(TAG, "INSTANCE OF reviews: " + ((Reviews) listData.get(i)).getAuthor());
-//
-//
-//
-                TextView trailer = (TextView) grid.findViewById(R.id.trTextView);
-//
-                trailer.setText(((Reviews) listData.get(i)).getAuthor());
 
+                TextView reviewAuthor = (TextView) grid.findViewById(R.id.trTextView);
+
+                reviewAuthor.setText(((Reviews) listData.get(i)).getAuthor());
+
+                TextView reviewContent= (TextView) grid.findViewById(R.id.contentTextView);
+                reviewContent.setText(((Reviews) listData.get(i)).getContent());
             }
         } else {
             grid = (View) convertView;
         }
 
         return grid;
-    }
-
-    public static class ViewHolder {
-        public TextView textView;
     }
 
 

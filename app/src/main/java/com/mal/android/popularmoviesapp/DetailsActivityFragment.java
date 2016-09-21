@@ -20,12 +20,10 @@ import com.google.gson.Gson;
 import com.mal.android.popularmoviesapp.adapter.DetailsListAdapter;
 import com.mal.android.popularmoviesapp.adapter.MovieListGridAdapter;
 import com.mal.android.popularmoviesapp.adapter.ReviewListAdapter;
-import com.mal.android.popularmoviesapp.adapter.TrailerListAdapter;
 import com.mal.android.popularmoviesapp.backend.AsyncTaskListener;
 import com.mal.android.popularmoviesapp.backend.Connector;
 import com.mal.android.popularmoviesapp.backend.DatabaseHelper;
 import com.mal.android.popularmoviesapp.backend.FetchDetailsData;
-import com.mal.android.popularmoviesapp.backend.FetchMovieData;
 import com.mal.android.popularmoviesapp.model.Movies;
 import com.mal.android.popularmoviesapp.model.Reviews;
 import com.mal.android.popularmoviesapp.model.TRbase;
@@ -51,7 +49,7 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
     private DatabaseHelper dataBase;
     private Movies detailData;
     private Button btn_add_to_fav;
-    private ListView listTwo;
+    private ListView reviewList;
 
 
     public DetailsActivityFragment() {
@@ -60,11 +58,10 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        View v = inflater.inflate(R.layout.fragment_details, container, false);
+
         View v = inflater.inflate(R.layout.fragment_details_main_list, container, false);
         detailsDataList = (ListView) v.findViewById(R.id.details_listView_movie);
-//        listOne = (ListView) v.findViewById(R.id.listView1);
-        listTwo = (ListView) v.findViewById(R.id.listView2);
+        reviewList = (ListView) v.findViewById(R.id.listView2);
 
         //Here we get bundle sent from grid click with movie details
         Bundle bundle = getArguments();
@@ -101,15 +98,13 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
     }
 
     private String fetchReviews(Movies detailData) {
-//        FetchDetailsData fetchDetailsData = new FetchDetailsData(this, detailData.getId());
-        FetchDetailsData fetchDetailsData = new FetchDetailsData(this, detailData.getId(),DETAILS_REVIEWS);
+        FetchDetailsData fetchDetailsData = new FetchDetailsData(this, detailData.getId(), DETAILS_REVIEWS);
         fetchDetailsData.execute(Connector.getBuilder(DETAILS_REVIEWS, detailData.getId()));
         return DETAILS_REVIEWS;
     }
 
     private String fetchMovies(Movies detailData) {
-//        FetchDetailsData fetchDetailsData = new FetchDetailsData(this, detailData.getId());
-        FetchDetailsData fetchDetailsData = new FetchDetailsData(this, detailData.getId(),DETAILS_VIDEOS);
+        FetchDetailsData fetchDetailsData = new FetchDetailsData(this, detailData.getId(), DETAILS_VIDEOS);
         fetchDetailsData.execute(Connector.getBuilder(DETAILS_VIDEOS, detailData.getId()));
         return DETAILS_VIDEOS;
     }
@@ -122,7 +117,6 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
         TextView txtMovieDate = (TextView) v.findViewById(R.id.txtMovieDate);
         TextView txtPostRate = (TextView) v.findViewById(R.id.txtPostRate);
         TextView txtPostDiscription = (TextView) v.findViewById(R.id.txtPostDiscription);
-
 
 
         //WE init fav button
@@ -193,16 +187,16 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
             e.printStackTrace();
         }
 
-        for (int k=0;k < reviewsDataList.size();k++){
-            if (reviewsDataList.get(k) instanceof Trailers){
-                TrailerListAdapter trailerListAdapter = new TrailerListAdapter(getActivity(),reviewsDataList);
-                detailsDataList.setAdapter(trailerListAdapter);
-                trailerListAdapter.notifyDataSetChanged();
-
-
-            }else if (reviewsDataList.get(k) instanceof Reviews){
-                ReviewListAdapter reviewListAdapter  = new ReviewListAdapter(getActivity(),reviewsDataList);
-                listTwo.setAdapter(reviewListAdapter);
+        for (int k = 0; k < reviewsDataList.size(); k++) {
+            if (reviewsDataList.get(k) instanceof Trailers) {
+                //To set data of trailer list with the header view
+                DetailsListAdapter detatailsListAdapter = new DetailsListAdapter(getActivity(), reviewsDataList);
+                detailsDataList.setAdapter(detatailsListAdapter);
+                detatailsListAdapter.notifyDataSetChanged();
+            } else if (reviewsDataList.get(k) instanceof Reviews) {
+//                To set the data of reviewlist in a separate adapter
+                ReviewListAdapter reviewListAdapter = new ReviewListAdapter(getActivity(), reviewsDataList);
+                reviewList.setAdapter(reviewListAdapter);
                 reviewListAdapter.notifyDataSetChanged();
 
             }
@@ -212,14 +206,10 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
     @Override
     public void notifyUpdateVidoes(String data) {
         Log.v(TAG, "FETCH data::Videoes:   " + data);
-//        if (TYPE_OF_DETAIL.equals(DETAILS_REVIEWS)){
-        Log.v(TAG, "tYPE IS : " + TYPE_OF_DETAIL);
 
         ArrayList<TRbase> trailerDataList = null;
 
-
         //Initialize arrayList if null
-
         if (null == trailerDataList) {
             trailerDataList = new ArrayList<TRbase>();
         }
@@ -244,81 +234,10 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
         //here we sent the rest of data e.g: reviews & retailers
         DetailsListAdapter detatailsListAdapter = new DetailsListAdapter(getActivity(), trailerDataList);
         detailsDataList.setAdapter(detatailsListAdapter);
-//
-
     }
 
     @Override
     public void notifyUpdate(String data) {
-//        Log.v(TAG, "FETCH data:: " + data);
-////        if (TYPE_OF_DETAIL.equals(DETAILS_REVIEWS)){
-//        Log.v(TAG, "tYPE IS : " + TYPE_OF_DETAIL);
-//        ArrayList<TRbase> reviewsDataList = null;
-//
-//
-//        //Initialize arrayList if null
-//
-//        if (null == reviewsDataList) {
-//            reviewsDataList = new ArrayList<TRbase>();
-//        }
-//
-//
-//        try {
-//            JSONObject result = new JSONObject(data);
-//            JSONArray results = result.getJSONArray("results");
-//            reviewsDataList.clear();
-//
-//            for (int k = 0; k < results.length(); k++) {
-//                JSONObject trailerObj = new JSONObject(results.get(k).toString());
-//
-////                    //TODO:be sure to use GSON library
-//                Gson gson = new Gson();
-//                TRbase reviewsJson = gson.fromJson(String.valueOf(trailerObj), Reviews.class);
-//
-//                reviewsDataList.add(reviewsJson);
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        //TODO:sending data of both reviews & videos in DetailsListAdapter
-//        //here we sent the rest of data e.g: reviews & retailers
-//        DetailsListAdapter detatailsListAdapter = new DetailsListAdapter(getActivity(), reviewsDataList);
-//        detailsDataList.setAdapter(detatailsListAdapter);
-
-//        }else if (TYPE_OF_DETAIL.equals(DETAILS_VIDEOS)){
-//            Log.v(TAG,"tYPE IS : "+TYPE_OF_DETAIL);
-//            ArrayList<Trailers> trailerDataList = null;
-//
-//
-//            //Initialize arrayList if null
-//
-//            if (null == trailerDataList) {
-//                trailerDataList = new ArrayList<Trailers>();
-//            }
-//
-//
-//            try {
-//                JSONObject result = new JSONObject(data);
-//                JSONArray results = result.getJSONArray("results");
-//                trailerDataList.clear();
-//
-//                for (int k = 0; k < results.length(); k++) {
-//                    JSONObject trailerObj = new JSONObject(results.get(k).toString());
-//
-//                    //TODO:be sure to use GSON library
-//                    Gson gson = new Gson();
-//                    Trailers trailerJson = gson.fromJson(String.valueOf(trailerObj), Trailers.class);
-//
-//                    trailerDataList.add(trailerJson);
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            //TODO:sending data of both reviews & videos in DetailsListAdapter
-//            //here we sent the rest of data e.g: reviews & retailers
-//            DetailsListAdapter detatailsListAdapter=new DetailsListAdapter(getActivity(),trailerDataList,null);
-//            detailsDataList.setAdapter(detatailsListAdapter);
-//        }
 
     }
 
@@ -332,7 +251,7 @@ public class DetailsActivityFragment extends Fragment implements AsyncTaskListen
 
     private void addToFav() {
         //here we add data to Database
-        dataBase.addToFavorite(detailData.getId(),detailData.getTitle(), detailData.getPoster_path(), detailData.getOverview(), detailData.getRelease_date());
+        dataBase.addToFavorite(detailData.getId(), detailData.getTitle(), detailData.getPoster_path(), detailData.getOverview(), detailData.getRelease_date());
         Toast.makeText(getActivity(), "Inserted Successfully to DB", Toast.LENGTH_LONG).show();
         btn_add_to_fav.setText(getString(R.string.added_fav));
     }

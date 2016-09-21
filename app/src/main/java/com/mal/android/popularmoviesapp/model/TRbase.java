@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by toshiba1 on 9/16/2016.
+ * Created by Alaa Gaber on 9/16/2016.
  */
 public class TRbase implements Parcelable {
     protected TRbase(Parcel in) {

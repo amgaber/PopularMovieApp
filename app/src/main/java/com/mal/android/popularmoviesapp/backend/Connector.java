@@ -8,7 +8,7 @@ import android.net.Uri;
 import com.mal.android.popularmoviesapp.BuildConfig;
 
 /**
- * Created by toshiba1 on 9/12/2016.
+ * Created by Alaa Gaber on 9/12/2016.
  */
 public class Connector {
 

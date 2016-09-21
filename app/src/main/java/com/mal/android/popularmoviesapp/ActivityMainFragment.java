@@ -2,11 +2,12 @@ package com.mal.android.popularmoviesapp;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcel;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -40,7 +41,6 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
     private static final String SHARED_SAVED = "SHARED_SAVED";
 
     private Movies savedInstanceData;
-    private RecyclerView movieRecyclerView;
     private GridView movieGridView;
     MovieClickListener clickListener;
     private boolean twoPaneUI;
@@ -93,9 +93,23 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
             }
 
         } else {
-            //TODO:Create popup message
+            //popup alert when there is No connection
             Log.v(TAG, "No network connection available.");
+            openAlertDialogConnectionError();
         }
+    }
+
+    private void openAlertDialogConnectionError() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Connection Error")
+                .setMessage("No network connection available!")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     public void message(String s) {
@@ -105,27 +119,38 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        if (Connector.IsConnected(getActivity().getApplicationContext())) {
 
             if (id == R.id.action_popular) {
-                FetchMovieData fetchMovieData = new FetchMovieData(this);
+                if (Connector.IsConnected(getActivity().getApplicationContext())) {
+
+                    FetchMovieData fetchMovieData = new FetchMovieData(this);
                 fetchMovieData.execute(Connector.getBuilder("popular", null));
 
                 //Using sharedPrefernce to save the lastClick
                 sharedPreference("popular");
+            } else {
+                //popup alert when there is No connection
+                Log.v(TAG, "No network connection available.");
+                openAlertDialogConnectionError();
+            }
                 return true;
 
             } else if (id == R.id.action_rate) {
-                FetchMovieData fetchMovieData = new FetchMovieData(this);
+                if (Connector.IsConnected(getActivity().getApplicationContext())) {
+
+                    FetchMovieData fetchMovieData = new FetchMovieData(this);
                 fetchMovieData.execute(Connector.getBuilder("top_rated", null));
 
                 //Using sharedPrefernce to save the lastClick
                 sharedPreference("top_rated");
+                } else {
+                    //popup alert when there is No connection
+                    Log.v(TAG, "No network connection available.");
+                    openAlertDialogConnectionError();
+                }
                 return true;
 
             } else if (id == R.id.action_favorite) {
@@ -143,7 +168,7 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
 
                 // looping through all rows and adding to list
                 if (cursor.moveToFirst()) {
-                //In case there are data in db we clear the list to add the new list
+                    //In case there are data in db we clear the list to add the new list
                     movieDataList.clear();
                     do {
                         Log.v(TAG, "DB: " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE)));
@@ -161,6 +186,18 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
                         movieDataList.add(movie);
 
                     } while (cursor.moveToNext());
+                }else {
+
+                    //To show dialog if there is no favorite data in dataBase
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Please Add a movie")
+                            .setMessage("No Favorite movies added to database,please add a movie !")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                }
+                            })
+                            .show();
                 }
 
                 //using gridlist adapter with gridview
@@ -169,10 +206,7 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
             }
 
 
-        } else {
-            //TODO:Create popup message
-            Log.v(TAG, "No network connection available.");
-        }
+
 
 
         return super.onOptionsItemSelected(item);

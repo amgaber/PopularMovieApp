@@ -4,9 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by toshiba1 on 9/12/2016.
+ * Created by Alaa Gaber on 9/12/2016.
  */
-//public class Trailers implements Parcelable {
+
 public class Trailers extends TRbase {
 
 //    {"id":"5794f51392514179d2004179","iso_639_1":"en","iso_3166_1":"US","key":"QF903RaKLvs","name":"Official Trailer","site":"YouTube","size":1080,"type":"Trailer"}]}
@@ -129,6 +129,4 @@ public class Trailers extends TRbase {
         parcel.writeString(type);
 
     }
-
-
 }

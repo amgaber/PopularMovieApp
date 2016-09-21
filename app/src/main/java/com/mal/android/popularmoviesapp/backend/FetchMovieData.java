@@ -22,7 +22,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 /**
- * Created by toshiba1 on 7/26/2016.
+ * Created by Alaa Gaber on 7/26/2016.
  */
 public class FetchMovieData extends AsyncTask<Uri.Builder, Void, String> {
     private static final String TAG = FetchMovieData.class.getSimpleName();
@@ -90,9 +90,6 @@ public class FetchMovieData extends AsyncTask<Uri.Builder, Void, String> {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                // But it does make debugging a *lot* easier if you print out the completed
-                // buffer for debugging.
                 buffer.append(line + "\n");
             }
 

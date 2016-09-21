@@ -1,9 +1,11 @@
 package com.mal.android.popularmoviesapp.adapter;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Parcel;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import com.mal.android.popularmoviesapp.ActivityMain;
 import com.mal.android.popularmoviesapp.ActivityMainFragment;
 import com.mal.android.popularmoviesapp.DetailsActivity;
 import com.mal.android.popularmoviesapp.R;
+import com.mal.android.popularmoviesapp.backend.Connector;
 import com.mal.android.popularmoviesapp.backend.MovieClickListener;
 import com.mal.android.popularmoviesapp.model.Movies;
 import com.squareup.picasso.Picasso;
@@ -92,9 +95,6 @@ public class MovieListGridAdapter extends BaseAdapter {
             ImageView imgPoster = (ImageView) grid.findViewById(R.id.imgPoster);
 
 
-//            http://image.tmdb.org/t/p/w185/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg
-            int width = activity.getResources().getDisplayMetrics().widthPixels;
-            int height=activity.getResources().getDisplayMetrics().heightPixels;
             Movies movieData = parsedMoviesDataList.get(i);
             String posterPath = movieData.getPoster_path();
             String base_url = "http://image.tmdb.org/t/p/w185/";
@@ -111,10 +111,15 @@ public class MovieListGridAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
 
-                    //getFragment by id to set clickListener
-                    ActivityMainFragment fragment= (ActivityMainFragment)activity.getFragmentManager().findFragmentById(R.id.fragment);
-                    fragment.choosedData(parsedMoviesDataList.get(i),i);
-
+                    if (Connector.IsConnected(activity.getApplicationContext())) {
+                        //getFragment by id to set clickListener
+                        ActivityMainFragment fragment = (ActivityMainFragment) activity.getFragmentManager().findFragmentById(R.id.fragment);
+                        fragment.choosedData(parsedMoviesDataList.get(i), i);
+                    }else {
+                        //popup alert when there is No connection
+                        Log.v(TAG, "No network connection available.");
+                        openAlertDialogConnectionError();
+                    }
                 }
             });
 
@@ -123,6 +128,18 @@ public class MovieListGridAdapter extends BaseAdapter {
         }
 
         return grid;
+    }
+
+    private void openAlertDialogConnectionError() {
+        new AlertDialog.Builder(activity)
+                .setTitle("Connection Error")
+                .setMessage("No network connection available!")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
 }
