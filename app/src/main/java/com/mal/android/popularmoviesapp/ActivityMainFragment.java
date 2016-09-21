@@ -1,6 +1,7 @@
 package com.mal.android.popularmoviesapp;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -47,6 +48,7 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
     private ArrayList<Movies> movieDataList;
     private int lastSavedPosition;
     private Movies dataSelected;
+    private ProgressDialog dialog;
 
     public ActivityMainFragment() {
     }
@@ -85,9 +87,19 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
 
             //Check if there is shared Data or not
             if (defaultValue != null) {
+                //To show loading progress dialog
+                dialog = new ProgressDialog(getActivity());
+                dialog.setTitle("Please wait");
+                dialog.show();
+
                 FetchMovieData fetchMovieData = new FetchMovieData(this);
                 fetchMovieData.execute(Connector.getBuilder(defaultValue, null));
             } else {
+                //To show loading progress dialog
+                dialog = new ProgressDialog(getActivity());
+                dialog.setTitle("Please wait");
+                dialog.show();
+
                 FetchMovieData fetchMovieData = new FetchMovieData(this);
                 fetchMovieData.execute(Connector.getBuilder("popular", null));
             }
@@ -123,10 +135,10 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
         int id = item.getItemId();
 
 
-            if (id == R.id.action_popular) {
-                if (Connector.IsConnected(getActivity().getApplicationContext())) {
+        if (id == R.id.action_popular) {
+            if (Connector.IsConnected(getActivity().getApplicationContext())) {
 
-                    FetchMovieData fetchMovieData = new FetchMovieData(this);
+                FetchMovieData fetchMovieData = new FetchMovieData(this);
                 fetchMovieData.execute(Connector.getBuilder("popular", null));
 
                 //Using sharedPrefernce to save the lastClick
@@ -136,77 +148,74 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
                 Log.v(TAG, "No network connection available.");
                 openAlertDialogConnectionError();
             }
-                return true;
+            return true;
 
-            } else if (id == R.id.action_rate) {
-                if (Connector.IsConnected(getActivity().getApplicationContext())) {
+        } else if (id == R.id.action_rate) {
+            if (Connector.IsConnected(getActivity().getApplicationContext())) {
 
-                    FetchMovieData fetchMovieData = new FetchMovieData(this);
+                FetchMovieData fetchMovieData = new FetchMovieData(this);
                 fetchMovieData.execute(Connector.getBuilder("top_rated", null));
 
                 //Using sharedPrefernce to save the lastClick
                 sharedPreference("top_rated");
-                } else {
-                    //popup alert when there is No connection
-                    Log.v(TAG, "No network connection available.");
-                    openAlertDialogConnectionError();
-                }
-                return true;
+            } else {
+                //popup alert when there is No connection
+                Log.v(TAG, "No network connection available.");
+                openAlertDialogConnectionError();
+            }
+            return true;
 
-            } else if (id == R.id.action_favorite) {
+        } else if (id == R.id.action_favorite) {
 
-                //Here we call openDbhelper to use it to get favorite movies
-                DatabaseHelper dataBase = new DatabaseHelper(getActivity());
-                Cursor cursor = dataBase.getMovies();
-
-
-                //Initialize arrayList if null
-                if (null == movieDataList) {
-                    movieDataList = new ArrayList<Movies>();
-                }
+            //Here we call openDbhelper to use it to get favorite movies
+            DatabaseHelper dataBase = new DatabaseHelper(getActivity());
+            Cursor cursor = dataBase.getMovies();
 
 
-                // looping through all rows and adding to list
-                if (cursor.moveToFirst()) {
-                    //In case there are data in db we clear the list to add the new list
-                    movieDataList.clear();
-                    do {
-                        Log.v(TAG, "DB: " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE)));
-
-                        //here we create a new instance of Movies & added it to movieDataList
-                        Movies movie = new Movies(Parcel.obtain());
-                        movie.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID))));
-                        movie.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE)));
-                        movie.setPoster_path(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_PATH)));
-                        movie.setOverview(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_OVERVIEW)));
-                        movie.setRelease_date(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DATE)));
-
-
-//                        // Adding contact to list
-                        movieDataList.add(movie);
-
-                    } while (cursor.moveToNext());
-                }else {
-
-                    //To show dialog if there is no favorite data in dataBase
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle("Please Add a movie")
-                            .setMessage("No Favorite movies added to database,please add a movie !")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // continue with delete
-                                }
-                            })
-                            .show();
-                }
-
-                //using gridlist adapter with gridview
-                MovieListGridAdapter movieListGridadapter = new MovieListGridAdapter(getActivity(), movieDataList);
-                movieGridView.setAdapter(movieListGridadapter);
+            //Initialize arrayList if null
+            if (null == movieDataList) {
+                movieDataList = new ArrayList<Movies>();
             }
 
 
+            // looping through all rows and adding to list
+            if (cursor.moveToFirst()) {
+                //In case there are data in db we clear the list to add the new list
+                movieDataList.clear();
+                do {
+                    Log.v(TAG, "DB: " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE)));
 
+                    //here we create a new instance of Movies & added it to movieDataList
+                    Movies movie = new Movies(Parcel.obtain());
+                    movie.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID))));
+                    movie.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE)));
+                    movie.setPoster_path(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_PATH)));
+                    movie.setOverview(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_OVERVIEW)));
+                    movie.setRelease_date(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DATE)));
+
+
+//                        // Adding contact to list
+                    movieDataList.add(movie);
+
+                } while (cursor.moveToNext());
+            } else {
+
+                //To show dialog if there is no favorite data in dataBase
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Please Add a movie")
+                        .setMessage("No Favorite movies added to database,please add a movie !")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                            }
+                        })
+                        .show();
+            }
+
+            //using gridlist adapter with gridview
+            MovieListGridAdapter movieListGridadapter = new MovieListGridAdapter(getActivity(), movieDataList);
+            movieGridView.setAdapter(movieListGridadapter);
+        }
 
 
         return super.onOptionsItemSelected(item);
@@ -221,6 +230,7 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
 
     @Override
     public void notifyUpdate(String data) {
+
 
         Log.v(TAG, "notify update: " + data);
         Log.v(TAG, "Implementing Interface to use AsyncTASK: " + data);
@@ -253,7 +263,8 @@ public class ActivityMainFragment extends Fragment implements AsyncTaskListener 
         MovieListGridAdapter movieListGridadapter = new MovieListGridAdapter(getActivity(), movieDataList);
         movieGridView.setAdapter(movieListGridadapter);
 
-
+        //Here we dismiss loading dialog
+        dialog.dismiss();
         //We check if it is two pane UI
         if (ActivityMain.mTwoPane) {
             //Check data from backend
